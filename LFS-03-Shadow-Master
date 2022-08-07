@@ -1,0 +1,87 @@
+
+Working Steps:-
+
+-- Create VM/Container  Ubuntu 20.04 Server
+-- Putting IP addresses and make sure it gets pkg update from Internet
+-- Configure Time Zone & Sync with NTP Server
+-- Populate /etc/hosts file with IP and Corresponding node names
+
+
+
+sudo su
+sudo apt update
+sudo apt install -y lizardfs-master lizardfs-adm lizardfs-cgi lizardfs-cgiserv lizardfs-common  
+
+
+
+
+sudo vim /etc/hosts
+
+
+192.168.101.110 mfsmaster
+
+192.168.101.111	mfsmastern1
+192.168.101.112	mfsmastern2
+
+192.168.101.113	mfsstorage1
+192.168.101.114	mfsstorage2
+192.168.101.115	mfsstorage3
+
+
+
+
+= Configuring LizardFS Master-Metadata-Server
+
+
+# ifconfig eth0:0 192.168.101.110 netmask 255.255.0.0 up
+# sudo ip addr add 192.168.101.110/16 brd + dev enp6s18
+
+cp /usr/share/doc/lizardfs-master/examples/* /etc/lizardfs/
+
+
+sudo vim /etc/lizardfs/mfsmaster.cfg
+
+PERSONALITY = shadow
+WORKING_USER = lizardfs
+WORKING_GROUP = lizardfs
+SYSLOG_IDENT = mfsmaster
+EXPORTS_FILENAME = /etc/lizardfs/mfsexports.cfg
+TOPOLOGY_FILENAME = /etc/lizardfs/mfstopology.cfg
+CUSTOM_GOALS_FILENAME = /etc/lizardfs/mfsgoals.cfg
+DATA_PATH = /var/lib/lizardfs
+AUTO_RECOVERY = 1
+ENDANGERED_CHUNKS_PRIORITY = 1
+MASTER_HOST = mfsmaster
+MASTER_PORT = 9419
+
+
+cp /var/lib/lizardfs/metadata.mfs.empty /var/lib/lizardfs/metadata.mfs
+sudo vim mfstopology.cfg
+
+192.168.0.0/16                1
+
+
+sudo vim mfsgoals.cfg
+
+1 1 : _
+2 2 : _ _
+3 3 : _ _ _
+4 xor2 : $xor2
+5 xor3 : $xor3
+
+
+
+
+sudo systemctl disable lizardfs-master
+sudo systemctl start lizardfs-master
+sudo systemctl status lizardfs-master
+
+sudo systemctl disable lizardfs-cgiserv
+sudo systemctl start lizardfs-cgiserv
+sudo systemctl status lizardfs-master.service
+
+
+ Browse http://192.168.101.110:9425/   -- and check that shadow-server is added there and synced
+
+
+

@@ -1,0 +1,113 @@
+
+
+Important note:- 
+Please keep in mind that, while master-node failing, all the running VMs may freeze For the time being
+& all chunk-server may need to restart their service.
+
+
+
+To simulate master node failure, manually we can simply pwwer-down the master-server
+
+
+After failure of master node, we will take shadow-master to work as master-node
+
+On Shadow Master, Command:
+sudo ip addr add 192.168.101.110/16 brd + dev enp6s18
+
+
+Now change the personality from “shadow” to “master”. To do that, command;
+
+sudo vim /etc/lizardfs/mfsmaster.cfg
+PERSONALITY= master
+
+Restart the master & cgiserv service
+systemctl restart lizardfs-master
+systemctl restart lizardfs-cgiserv
+
+
+Now check lizardfs GUI http://192.168.101.110:9425
+
+
+
+
+
+
+= LizardFS Master-Server Failure & Automated Recovery from Shadow-Master
+
+If we want to automate this process we can use some shell script to make shadow-master as master-server when master-server is down.
+
+
+On Shadow Master:
+
+vim /usr/bin/shadowmaster-to-master.sh 		; add the following lines
+
+#!/bin/bash
+sudo ip addr add 192.168.101.110/16 brd + dev enp6s18
+sed -i 's/= shadow/= master/g' /etc/lizardfs/mfsmaster.cfg
+
+systemctl restart lizardfs-master
+systemctl restart lizardfs-cgiserv
+
+Save+Exit
+
+
+chmod +x /usr/bin/shadowmaster-to-master.sh
+
+
+
+
+
+
+
+vim /usr/bin/master-check.sh 				; add the following lines
+#!/bin/bash
+count=$(ping -c 10 -i 0.1 192.168.101.110 | grep 'received' | awk -F',' '{ print $2 }' | awk '{ print $1 }');
+if [ $count -eq 0 ]; then
+ # echo "LizardFS Master is =DOWN= @ [$(date)]" | mail -s "LizardFS Master is =DOWN= @ [$(date)]" nms@ydomain.com;
+ nohup /usr/bin/shadowmaster-to-master.sh &
+ exit 0;
+fi
+
+Save+Exit
+
+
+
+chmod +x /usr/bin/master-check.sh
+
+
+
+
+
+
+
+
+
+
+
+vim /usr/bin/master-check-10s.sh
+#!/bin/bash
+/usr/bin/master-check.sh
+sleep 10
+/usr/bin/master-check.sh
+sleep 10
+/usr/bin/master-check.sh
+sleep 10
+/usr/bin/master-check.sh
+sleep 10
+/usr/bin/master-check.sh
+sleep 10
+/usr/bin/master-check.sh
+
+
+
+Save+Exit
+chmod +x /usr/bin/master-check-10s.sh
+
+
+vim /etc/crontab
+* * * * * root master-check-10s.sh
+
+
+
+
+

@@ -1,0 +1,114 @@
+
+Working Steps:-
+
+-- Create VM/Container  Ubuntu 20.04 Server
+-- Putting IP addresses and make sure it gets pkg update from Internet
+-- Configure Time Zone & Sync with NTP Server
+-- Populate /etc/hosts file with IP and Corresponding node names
+
+
+
+
+sudo su
+sudo apt update
+sudo apt install -y lizardfs-client lizardfs-common lizardfs-adm lizardfs-chunkserver xfsprogs gdisk
+
+
+
+sudo vim /etc/hosts
+
+
+192.168.101.110 mfsmaster
+192.168.101.111	mfsmastern1
+192.168.101.112	mfsmastern2
+
+192.168.101.113	mfsstorage1
+192.168.101.114	mfsstorage2
+192.168.101.115	mfsstorage3
+
+
+
+= Disk partition format in chunk server.
+
+gdisk /dev/vdb
+gdisk /dev/vdc
+
+mkfs.xfs /dev/vdb1
+mkfs.xfs /dev/vdc1
+
+mkdir /mnt/vdb1
+mkdir /mnt/vdc1
+
+
+
+vim /etc/fstab
+
+
+/dev/vdb1 /mnt/vdb1 xfs defaults,noatime,nodiratime 0 0
+/dev/vdc1 /mnt/vdc1 xfs defaults,noatime,nodiratime 0 0
+
+
+
+mount -a
+df -h
+
+
+chown -R lizardfs:lizardfs /mnt/vdb1
+chown -R lizardfs:lizardfs /mnt/vdc1
+
+
+
+cp -r /usr/share/doc/lizardfs-chunkserver/examples/* /etc/lizardfs/
+
+cd /etc/lizardfs
+gunzip mfschunkserver.cfg.gz
+
+vim mfschunkserver.cfg
+
+WORKING_USER = lizardfs
+WORKING_GROUP = lizardfs
+SYSLOG_IDENT = mfschunkserver
+DATA_PATH = /var/lib/lizardfs
+MASTER_HOST = mfsmaster
+MASTER_PORT = 9420
+HDD_CONF_FILENAME = /etc/lizardfs/mfshdd.cfg
+
+
+vim mfshdd.cfg
+
+/mnt/vdb1
+/mnt/vdc1
+
+
+systemctl enable lizardfs-chunkserver
+systemctl start lizardfs-chunkserver
+systemctl restart lizardfs-chunkserver
+
+
+= Mounting the clustered storage.
+
+
+cp -r /usr/share/doc/lizardfs-client/examples/* /etc/lizardfs/
+vim mfsmount.cfg
+
+/mnt/mfs
+mkdir /mnt/mfs
+chown -R lizardfs:lizardfs /mnt/mfs
+lfsmount
+df -h 	
+
+
+
+
+
+
+
+lizardfs setgoal 2 /mnt/mfs
+
+mkdir /mnt/mfs/lxc
+mkdir /mnt/mfs/vms
+
+lizardfs setgoal 3 /mnt/mfs/lxc
+lizardfs setgoal 3 /mnt/mfs/vms
+
+
