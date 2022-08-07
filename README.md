@@ -1,2 +1,2 @@
-# sebpopublic
-Public Work Notes for SEBPO
+# Works Note / Tutorial Drafts (WP-Q1)
+
