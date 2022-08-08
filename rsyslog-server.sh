@@ -37,7 +37,7 @@ input(type="imtcp" port="5140")
 $template RemoteInputLogs, "/savol2/network-logs/%FROMHOST%.log"
 *.* ?RemoteInputLogs
 
-
+#$template RemoteLogs,”/var/log/%HOSTNAME%/%PROGRAMNAME%.log””.
 #$template RemoteLogs,"/savol2/network-logs/%HOSTNAME%/%PROGRAMNAME%.log"
 #*.* ?RemoteLogs 
 #& ~
