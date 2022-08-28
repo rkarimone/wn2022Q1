@@ -245,6 +245,36 @@ dpkg-reconfigure dash  ---> No
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+https://askubuntu.com/questions/1379320/problem-installing-hp-proliant-utilities-on-ubuntu-server-20
+
+
+
+
+
+   83  sudo echo "deb http://downloads.linux.hpe.com/SDR/repo/mcp bionic/current non-free" > /etc/apt/sources.list.d/mcp.list
+   85  vim /etc/apt/sources.list.d/mcp.list   // change bionic -to- focal
+   93  sudo curl http://downloads.linux.hpe.com/SDR/hpPublicKey1024.pub | sudo apt-key add -
+   94  sudo curl http://downloads.linux.hpe.com/SDR/hpPublicKey2048.pub | sudo apt-key add -
+   95  sudo curl http://downloads.linux.hpe.com/SDR/hpPublicKey2048_key1.pub | sudo apt-key add -
+   96  sudo curl http://downloads.linux.hpe.com/SDR/hpePublicKey2048_key1.pub | sudo apt-key add -
+   89  apt update
+  100  sudo apt install hponcfg amsd ams ssacli ssaducli ssa
+
+wget -c http://downloads.linux.hpe.com/SDR/repo/mcp/pool/non-free/hp-health_10.80-1874.10_amd64.deb
+apt install gdebi-core
+gdebi hp-health_10.80-1874.10_amd64.deb
+
+
+https://gist.github.com/mrpeardotnet/a9ce41da99936c0175600f484fa20d03
+
+  119  ssacli ctrl slot=0 pd all show
+  120  ssacli ctrl slot=0 pd all show detail
+  121  ssacli ctrl slot=0 pd all show detail |grep Serial
+
+
+
+_____________
+
 sudo add-apt-repository ppa:jonathonf/zfs
 sudo apt update
 sudo apt install zfsutils-linux gdisk
@@ -1862,6 +1892,10 @@ Code:
 pct create 100 /ct.tar.gz -description container1 -hostname container1 -memory 1024 -nameserver 8.8.8.8 -storage storage -password changeme --rootfs storage:subvol-100-disk-0,quota=0
 
 Container is created, no errors in logs.
+
+
+
+
 
 
 
