@@ -129,9 +129,6 @@ sudo apt install -y wget axel iftop htop vim iperf3 mtr mc bwm-ng snmpd openssh-
 
 ### System Performance Tuning
 
-echo '* soft nofile 1024000' >> /etc/security/limits.conf
-echo '* hard nofile 1024000' >> /etc/security/limits.conf
-
 sudo vim /etc/security/limits.conf
 
 root soft     nproc          1024000
