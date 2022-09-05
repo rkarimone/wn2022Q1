@@ -1956,3 +1956,33 @@ reboot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+
+
+
+
+   49  sudo a2dismod php7.4
+   50  sudo a2dismod php8.1
+   51  systemctl restart apache2
+   52  sudo a2dismod mpm_prefork
+   53  systemctl restart apache2
+   54  journalctl -xe
+   55  sudo a2enmod mpm_event proxy_fcgi setenvif
+   56  systemctl restart apache2
+   57  sudo a2enconf php8.1-fpm
+   58  systemctl restart apache2
+   59  cd /etc/apache2/sites-enabled/
+   60  ls
+   61  ll
+   62  cd ..
+   63  ls
+   64  cd sites-available/
+   65  ls
+   66  a2ensite 000-default.conf
+   67  systemctl reload apache2
+   68  vim 000-default.conf
+   69  systemctl reload apache2
+   70  systemctl restart apache2
+   71  cd
+   72  history
+
+
