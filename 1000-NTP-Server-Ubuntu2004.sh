@@ -256,6 +256,7 @@ server 0.asia.pool.ntp.org iburst
 server 1.asia.pool.ntp.org iburst
 server 2.asia.pool.ntp.org iburst
 server 3.asia.pool.ntp.org iburst
+server bd.pool.ntp.org iburst
 
 #add network range you allow to receive time syncing requests from clients
 allow 103.7.248.0/24
