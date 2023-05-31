@@ -319,3 +319,12 @@ leapsectz right/UTC
 
 
 
+
+
+#### Mikrotik Script
+
+/system ntp client set enabled=yes
+/system clock set time-zone-name=Asia/Dhaka
+/system ntp client servers add address=103.12.205.40
+
+
