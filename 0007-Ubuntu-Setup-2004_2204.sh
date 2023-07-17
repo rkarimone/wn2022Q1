@@ -406,6 +406,12 @@ sudo apt-get update
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+echo "options zfs zfs_arc_max=4294967296" > /etc/modprobe.d/zfs.conf
+echo "4294967296" >> /sys/module/zfs/parameters/zfs_arc_max
+sync; echo 3 > /proc/sys/vm/drop_caches
+
+
+
 
 (09) Install KVM and LXC foR virtualization.
 
