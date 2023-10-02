@@ -84,3 +84,30 @@ https://www.devopszones.com/2020/03/how-to-send-mail-through-gmail-on.html
 https://netcorecloud.com/tutorials/install-centos-postfix/
 
 
+
+
+
+sudo zfs set sync=disabled sol1
+sudo zfs set compress=lz4 sol1
+sudo zfs set atime=off sol1
+sudo zfs set xattr=sa sol1
+sudo zfs set relatime=off sol1
+sudo zfs set acltype=posixacl sol1
+
+
+
+echo "options zfs zfs_arc_max=8589934592" > /etc/modprobe.d/zfs.conf
+echo "8589934592" >> /sys/module/zfs/parameters/zfs_arc_max
+
+
+
+sync; echo 3 > /proc/sys/vm/drop_caches
+
+
+
+
+
+
+
+
+
