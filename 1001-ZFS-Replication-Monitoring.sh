@@ -1,3 +1,78 @@
+#####################################################################################
+#                                                                               #####
+########### // ZFS Snapshot and Replication //                                  ##### 
+#                                                                               #####
+#####################################################################################
+
+cd /root/
+ssh-keygen -t rsa                   // Press all Enter //
+ssh-copy-id -p 1122 -i /root/.ssh/id_rsa.pub 'root@172.16.108.71'
+
+; test connection
+ssh root@172.16.108.71 -p 1122		; // this should not ask any password
+
+
+
+# Step-1: 
+sudo zfs create groupXvol1/gXsysconfig
+cd /root/
+date_time=`date +%Y%m%d-%H%M%S`;
+zfs snapshot -r groupXvol1/gXsubvol1@$date_time;
+zfs send -R groupXvol1/gXsubvol1$date_time| ssh root@172.16.108.71 "zfs receive -dvF groupYvol1"
+echo $date_time > /groupXvol1/gXsysconfig/gXsubvol1_lsnapid;
+
+
+
+zfs send -R lxc/qmail1@hpg8 | ssh root@192.168.141.20 -p 7878 "zfs receive -dvF dell2uvol1/backup"
+
+zfs send -R n1vol1/lxc/gl-1@02112021_205556 | ssh root@192.168.131.253 -p 7878 "zfs receive -dvF glbox1vol1/lxc"
+
+
+n1vol1/lxc/gl-1@02112021_205556
+
+
+date_time=`date +%Y%m%d-%H%M%S`;
+zfs snapshot -r eph1hdpool1/N1-SR300NFS-HDD@$date_time;
+zfs list -t snapshot
+zfs send -R eph1hdpool1/N1-SR300NFS-HDD@$date_time | ssh root@192.168.124.254  "zfs receive -dvF eph2hdpool1"
+echo $date_time > /eph1hdpool1/n1sysconfig/n1_lsnapid;
+
+
+# Step-2: 
+
+vim /groupXvol1/gXsysconfig/gXreplication-script.sh
+
+#!/bin/bash
+zfs list -rt snapshot -o name |grep groupXvol1/gXsubvol1 |sort |head -n -5 |xargs -n 1 zfs destroy -r 2> /dev/null;
+date_time=`date +%Y%m%d-%H%M%S`;
+zfs snapshot -r groupXvol1/gXsubvol1@$date_time;
+new_snap_id="groupXvol1/gXsubvol1@$date_time";
+old_snap_id=`cat /groupXvol1/gXsysconfig/gXsubvol1_lsnapid`;
+zfs send -I groupXvol1/gXsubvol1@$old_snap_id -R $new_snap_id | ssh root@172.16.108.71 "zfs receive -dvF groupYvol1" ;
+echo $date_time > /groupXvol1/gXsysconfig/gXsubvol1_lsnapid;
+
+
+chmod +x /groupXvol1/gXsysconfig/gXreplication-script.sh
+
+
+vim /etc/crontab
+*/5 * * * * root /groupXvol1/gXsysconfig/gXreplication-script.sh 
+
+
+
+zfs send -I eph2hdpool1/eph1bpool1/vm01@09092020_020506 -R pool1/vm01@20200909-103040 | ssh root@192.168.124.20 -p 7860 zfs recv -dvF eph2hdpool1/eph1bpool1;
+
+
+
+
+
+#####################################################################################
+#                                                                               #####
+########### // ZFS Snapshot and Replication MONITORING //                       ##### 
+#                                                                               #####
+#####################################################################################
+
+
 
 
 #!/bin/bash
