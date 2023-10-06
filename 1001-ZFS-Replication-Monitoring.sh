@@ -64,7 +64,6 @@ vim /etc/crontab
 
 
 
-zfs send -I eph2hdpool1/eph1bpool1/vm01@09092020_020506 -R pool1/vm01@20200909-103040 | ssh root@192.168.124.20 -p 7860 zfs recv -dvF eph2hdpool1/eph1bpool1;
 
 
 
