@@ -4,12 +4,16 @@
 #                                                                               #####
 #####################################################################################
 
+###### SOURCE-SERVER ########
+
+# Preparation ...
 cd /root/
 ssh-keygen -t rsa                   // Press all Enter //
-ssh-copy-id -p 1122 -i /root/.ssh/id_rsa.pub 'root@172.16.108.71'
+ssh-copy-id -p 1122 -i /root/.ssh/id_rsa.pub 'root@172.16.108.71'   // 172.16.108.71 --is remote server IP //
 
 ; test connection
 ssh root@172.16.108.71 -p 1122		; // this should not ask any password
+
 
 
 
@@ -18,7 +22,7 @@ sudo zfs create groupXvol1/gXsysconfig
 cd /root/
 date_time=`date +%Y%m%d-%H%M%S`;
 zfs snapshot -r groupXvol1/gXsubvol1@$date_time;
-zfs send -R groupXvol1/gXsubvol1$date_time| ssh root@172.16.108.71 "zfs receive -dvF groupYvol1"
+zfs send -R groupXvol1/gXsubvol1$date_time| ssh root@172.16.108.71 -p 1122 "zfs receive -dvF groupYvol1"
 echo $date_time > /groupXvol1/gXsysconfig/gXsubvol1_lsnapid;
 
 
