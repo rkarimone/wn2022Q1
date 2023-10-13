@@ -164,3 +164,47 @@ fi
 
 
 
+
+
+
+// Handling Disk Failure //
+
+|||||||||| Manualy Fail a disk  (lab instructor will do)
+
+syntax: zpool replace [poolname] [old drive id] [new disk drive]
+
+// Replace old/damaged disks //
+zpool status                // find the failed disk
+
+ state: DEGRADED
+status: One or more devices could not be used because the label is missing or
+	invalid.  Sufficient replicas exist for the pool to continue
+	functioning in a degraded state.
+action: Replace the device using 'zpool replace'.
+   see: http://zfsonlinux.org/msg/ZFS-8000-4J
+  scan: none requested
+config:
+
+	NAME                      STATE     READ WRITE CKSUM
+	groupXvol1                DEGRADED     0     0     0
+	  raidz1-0                DEGRADED     0     0     0
+	    xvdb                  ONLINE       0     0     0
+	    xvdc                  ONLINE       0     0     0
+	    16626827190568113194  UNAVAIL      0     0     0  was /dev/xvde1
+
+errors: No known data errors
+
+|||||||||| Add a new disk (lab instructor will do)
+|||||||||| Initialize New Disk  (participant will do)
+sudo sgdisk --zap-all /dev/xvdf
+
+
+zpool replace groupXvol1 16626827190568113194 /dev/xvdf
+watch zpool status
+zpool clear groupXvol1
+zpool status
+
+
+
+
+
