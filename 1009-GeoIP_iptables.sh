@@ -84,38 +84,11 @@ root@mx1:~# cat /etc/network/if-up.d/rc.local.sh
 iptables -F
 iptables -A INPUT -s 127.0.0.0/8 -j ACCEPT
 iptables -A INPUT -s 192.168.55.0/24 -j ACCEPT
+iptables -A INPUT -m geoip -p tcp -m multiport --dports 22,80,143,993,443,4190,5432,5232 ! --src-cc BD -j DROP
 iptables -A INPUT -m geoip --src-cc RU,CN,KR,KP,BR,UG -j DROP
-root@mx1:~# iptables -nvL
-Chain INPUT (policy ACCEPT 1390 packets, 1121K bytes)
- pkts bytes target     prot opt in     out     source               destination         
-74832   36M ACCEPT     all  --  *      *       127.0.0.0/8          0.0.0.0/0           
- 2776  217K ACCEPT     all  --  *      *       192.168.55.0/24      0.0.0.0/0           
-   44  3696 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            -m geoip --source-country RU,CN,KR,KP,BR,UG 
-
-Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               destination         
-
-Chain OUTPUT (policy ACCEPT 76357 packets, 37M bytes)
- pkts bytes target     prot opt in     out     source               destination         
-root@mx1:~# 
 
 
 
-
-
-
-root@email:~# iptables -nvL
-Chain INPUT (policy ACCEPT 2081 packets, 195K bytes)
- pkts bytes target     prot opt in     out     source               destination         
- 7060 4396K ACCEPT     all  --  *      *       127.0.0.0/8          0.0.0.0/0           
-18105 2510K ACCEPT     all  --  *      *       192.168.55.0/24      0.0.0.0/0           
- 3586  410K DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            -m geoip ! --source-country BD 
-
-Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               destination         
-
-Chain OUTPUT (policy ACCEPT 11377 packets, 6363K bytes)
- pkts bytes target     prot opt in     out     source               destination         
 root@email:~# cat /etc/network/if-up.d/rc.local.sh 
 iptables -F
 iptables -A INPUT -s 127.0.0.0/8 -j ACCEPT
@@ -123,5 +96,22 @@ iptables -A INPUT -s 192.168.55.0/24 -j ACCEPT
 iptables -A INPUT -m geoip ! --src-cc BD -j DROP
 
 
+
+
+
+
+
+kernel.shmmax=536870912
+kernel.shmall=131072
+
+max_connections = 200
+shared_buffers = 256MB
+effective_cache_size = 768MB
+work_mem = 1310kB
+maintenance_work_mem = 64MB
+#checkpoint_segments = 32
+checkpoint_completion_target = 0.7
+wal_buffers = 7864kB
+default_statistics_target = 100
 
 
