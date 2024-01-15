@@ -216,3 +216,83 @@ post-up /etc/network/if-up.d/rc.local.run.sh
 
 
 
+
+
+
+##############2024 #################
+# https://operavps.com/docs/install-softether-vpn-on-ubuntu/
+# https://www.linuxbabe.com/ubuntu/set-up-softether-vpn-server
+
+
+
+apt-get update –y
+apt-get install build-essential gnupg2 gcc make –y
+
+wget https://www.softether-download.com/files/softether/v4.42-9798-rtm-2023.06.30-tree/Linux/SoftEther_VPN_Server/64bit_-_Intel_x64_or_AMD64/softether-vpnserver-v4.42-9798-rtm-2023.06.30-linux-x64-64bit.tar.gz
+tar xvf softether-vpnserver-*.tar.gz
+cd vpnserver/
+
+sudo apt install gcc binutils gzip libreadline-dev libssl-dev libncurses5-dev libncursesw5-dev libpthread-stubs0-dev
+make
+
+
+cd ..
+sudo mv vpnserver /opt/softether
+sudo /opt/softether/vpnserver start
+sudo /opt/softether/vpnserver stop
+
+
+
+sudo nano /etc/systemd/system/softether-vpnserver.service
+
+[Unit]
+Description=SoftEther VPN server
+After=network-online.target
+After=dbus.service
+
+[Service]
+Type=forking
+ExecStart=/opt/softether/vpnserver start
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+
+
+sudo systemctl start softether-vpnserver
+sudo systemctl enable softether-vpnserver
+systemctl status softether-vpnserver
+
+
+sudo journalctl -eu softether-vpnserver
+sudo  ss -lnptu | grep vpnserver
+
+sudo ufw allow 80,443,992,1194,555/tcp
+sudo ufw allow 1194,51612,53400,56452,40085/udp
+
+ufw reload
+
+
+
+/opt/softether/vpncmd
+
+Hub DEFAULT
+UserCreate username
+
+UserPasswordSet username
+
+SecureNatEnable
+
+DhcpSet
+exit
+
+
+
+
+
+
+
+
+
+
+##############2024 #################
