@@ -287,9 +287,71 @@ DhcpSet
 exit
 
 
+##############2024 #################
 
 
 
+# https://www.linuxbabe.com/ubuntu/set-up-softether-vpn-server
+
+wget https://www.softether-download.com/files/softether/v4.41-9787-rtm-2023.03.14-tree/Linux/SoftEther_VPN_Server/64bit_-_Intel_x64_or_AMD64/softether-vpnserver-v4.41-9787-rtm-2023.03.14-linux-x64-64bit.tar.gz
+
+tar xvf softether-vpnserver-*.tar.gz
+cd vpnserver/
+sudo apt install gcc binutils gzip libreadline-dev libssl-dev libncurses5-dev libncursesw5-dev libpthread-stubs0-dev
+
+make
+cd ..
+sudo mv vpnserver /opt/softether
+
+sudo /opt/softether/vpnserver start
+sudo /opt/softether/vpnserver stop
+
+
+sudo nano /etc/systemd/system/softether-vpnserver.service
+
+[Unit]
+Description=SoftEther VPN server
+After=network-online.target
+After=dbus.service
+
+[Service]
+Type=forking
+ExecStart=/opt/softether/vpnserver start
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+
+
+sudo systemctl start softether-vpnserver
+sudo systemctl enable softether-vpnserver
+systemctl status softether-vpnserver
+
+
+sudo journalctl -eu softether-vpnserver
+sudo  ss -lnptu | grep vpnserver
+
+sudo ufw allow 80,443,992,1194,555/tcp
+sudo ufw allow 1194,51612,53400,56452,40085/udp
+
+
+/opt/softether/vpncmd
+
+
+
+
+network:
+    ethernets:
+        enp3s0:
+            dhcp4: false
+            addresses: [192.168.1.19/22]
+            gateway4: 192.168.1.1
+            nameservers:
+              addresses: [8.8.8.8,8.8.4.4,192.168.1.1]
+    version: 2
+
+
+    
 
 
 
