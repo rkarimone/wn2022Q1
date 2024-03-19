@@ -206,5 +206,13 @@ zpool status
 
 
 
+########### zfs fast-replication #############
+1st-Receiving Side
+apt install mbuffer
+mbuffer -4 -s 128k -m 4G -I 8000 | zfs receive -vF n2vol1/n1vms
+
+2nd-Sendng side
+apt install mbuffer
+zfs send -R n1vol0/n1vms@20240127-215024 | mbuffer -s 128k -m 4G -O 10.10.20.2:8000
 
 
