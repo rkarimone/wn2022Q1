@@ -15,6 +15,10 @@ sudo systemctl enable wg-quick@wg0
 sudo systemctl start wg-quick@wg0
 sudo systemctl status wg-quick@wg0
 
+systemctl enable wg-quick@wg0
+systemctl start wg-quick@wg0
+systemctl status wg-quick@wg0
+
 
 sudo systemctl restart wg-quick@wg0
 
