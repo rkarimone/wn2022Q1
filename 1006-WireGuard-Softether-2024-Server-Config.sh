@@ -227,6 +227,22 @@ root hard     nofile         1024000
 
 sudo reboot
 
+### DISALBE HTML5-WEB-UI####
+
+-Stop the service(deamon) in linux or windows (or whatever you run softether in/on)
+-edit the "vpn_server.config" file with your favorite editor,
+-change "bool DisableJsonRpcWebApi" from "false" to "true",
+-save file,
+-start service(deamon) again.
+
+
+
+
+
+
+
+
+
 
 ## https://insights.ditatompel.com/en/tutorials/how-to-setup-your-own-wireguard-vpn-server/
 ########################  WireGuard-VPN Server ############ 2024 ##################
