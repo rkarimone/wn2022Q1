@@ -228,7 +228,7 @@ root hard     nofile         1024000
 sudo reboot
 
 
-
+## https://insights.ditatompel.com/en/tutorials/how-to-setup-your-own-wireguard-vpn-server/
 ########################  WireGuard-VPN Server ############ 2024 ##################
 # https://insights.ditatompel.com/en/tutorials/installing-wireguard-ui-to-manage-your-wireguard-vpn-server/
 
