@@ -178,3 +178,8 @@ iptables -F -t nat
 #alada ekta command  "aggregator-group load-balance both-ip" aita daur por kaj korcelo perfectly. 
 #jodeo cisco te aigula kora lage na. ekhon server e ki emon kono issue ache kena?
 
+
+docker container prune -f
+docker image prune -f
+docker volume prune -f
+
