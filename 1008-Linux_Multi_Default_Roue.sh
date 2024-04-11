@@ -115,5 +115,26 @@ sleep 1
 /etc/init.d/vpnserver restart >/dev/null 2>&1
 
 
+######## Another Method #####
+
+
+I have two different ISPs. I want to set some kind of load balancing setup that will distribute packets to those providers. I know this can be done using different routing tables, but I wanted to use something called "multipath gateway".
+
+Ive configured both interfaces in the /etc/network/interfaces file. Both of the connections work separately. I replaced the default gateways with the one below:
+
+# ip route add default \
+    nexthop via 192.168.1.1 dev bond0 weight 1 \
+    nexthop via 10.143.105.17 dev wwan0 weight 1
+
+#I added masquerade targets in iptables on both of the interfaces:
+
+iptables -t nat -A POSTROUTING -o wwan0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o bond0 -j MASQUERADE
+
+#Also I enabled (partially) reverse path filtering via sysctl:
+net.ipv4.conf.all.rp_filter = 2
+net.ipv4.conf.default.rp_filter = 2
+
+This setup works. Packets (connections) are sent via both interfaces. 
 
 
