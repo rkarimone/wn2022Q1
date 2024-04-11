@@ -16,6 +16,13 @@ ip rule add to 123.200.2.36/32 table enp1s0f2
 ip route flush cache
 
 
+#another step (if require)
+$ ip route
+default via 10.255.254.1 dev eth0 proto static metric 100
+default via 10.255.72.1 dev eth1 proto static metric 101
+10.255.72.0/22 dev eth1 proto kernel scope link src 10.255.72.230 metric 101
+10.255.254.0/24 dev eth0 proto kernel scope link src 10.255.254.45 metric 100
+
 
 
 
