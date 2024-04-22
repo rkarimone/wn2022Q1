@@ -112,3 +112,38 @@ Step5: Restart rsyslog service
 -- https://ipcorenetworks.blogspot.com/2021/09/how-to-install-configure-loganalyzer.html
 
 -- https://www.youtube.com/watch?v=d0zwT98MAgw
+
+
+cat /usr/bin/xhourly_log_format.sh
+
+#!/bin/bash
+date_time=`date -d '1 hour ago' "+%Y-%m-%d-%H"`
+
+### 103-118-84-03-ABUZZ-SPR-NMC ### STATIC
+cat /mnt/logdrive/logs-collect/103-118-84-03-ABUZZ-SPR-NMC/$date_time.log |grep VLAN | awk '{print $1,$2,$9,$15}' | sed -e 's/,//g' -e 's/(//' -e 's/)//' -e 's/->/ /g' |grep -v proto > /mnt/logdrive/TEMP/103-118-84-3/$date_time.txt
+#
+rsync -av /mnt/logdrive/TEMP/103-118-84-3 /mnt/logdrive/ARCHIVE/
+rsync -av /mnt/logdrive/TEMP/103-118-84-3 /mnt/logdrive/STATIC/
+#
+
+### 103-118-84-03-ABUZZ-SPR-NMC ### PPPOE
+cat /mnt/logdrive/logs-collect//103-118-84-03-ABUZZ-SPR-NMC/$date_time.log |grep pppoe | awk '{print $1,$2,$4,$9,$15}' | sed -e 's/,//g' -e 's/in:<//g' -e 's/(//g' -e 's/->/ /g' -e 's/)//g' -e 's/>//g' |grep -v proto > /mnt/logdrive/TEMP/103-118-84-3/$date_time.txt
+#
+rsync -av /mnt/logdrive/TEMP/103-118-84-3 /mnt/logdrive/ARCHIVE/
+rsync -av /mnt/logdrive/TEMP/103-118-84-3 /mnt/logdrive/PPPOES/
+#
+sleep 2
+rm -fr /mnt/logdrive/TEMP/103-118-84-3/$date_time.txt
+
+
+
+### 103-118-84-68-ABUZZ-108515 ### PPPOE
+cat /mnt/logdrive/logs-collect/103-118-84-68-ABUZZ-108515/$date_time.log |grep pppoe |  awk '{print $1,$2,$4,$9,$15}' | sed -e 's/,//g' -e 's/in:<//g' -e 's/(//g' -e 's/->/ /g' -e 's/)//g' -e 's/>//g' |grep -v proto > /mnt/logdrive/TEMP/103-118-84-68/$date_time.txt
+#
+rsync -av /mnt/logdrive/TEMP/103-118-84-68 /mnt/logdrive/ARCHIVE/
+rsync -av /mnt/logdrive/TEMP/103-118-84-68 /mnt/logdrive/PPPOES/
+#
+sleep 2
+rm -fr /mnt/logdrive/TEMP/103-118-84-68/$date_time.txt
+
+
