@@ -281,6 +281,21 @@ sudo systemctl restart rsyslog
 sudo systemctl status rsyslog
 
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+|MIKROTIK-CONFIGURATION ||▼
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+### Config In MikrotTik
+system logging action add bsd-syslog=yes name=remotelogsrv1 remote=103.xxx.yy.237 syslog-facility=local6 target=remote
+system logging set 0 topics=info,!firewall,!script
+system logging add action=remotelogsrv1 topics=script
+system logging add action=remotelogsrv1 topics=firewall
+system logging add action=remotelogsrv1 topics=account
+ip firewall mangle add action=log chain=prerouting connection-state=established protocol=tcp src-address=10.0.0.0/8 tcp-flags=fin
+
+
+#ip firewall mangle add action=log chain=prerouting connection-state=established protocol=tcp src-address=10.0.0.0/8 tcp-flags=fin
+#ppp profile set *0 on-up=":foreach dev in=[ppp active print detail as-value where name=\$user ] do={\r\n    /log info (\"PPPLOG \$user \" . (\$dev->\"caller-id\") . \" \" . (\$dev->\"address\"));\r\n}"
 
 
 
@@ -288,8 +303,20 @@ sudo systemctl status rsyslog
 |Log Processing Scripts ||▼
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+mkdir -p /mnt/logdrive/ARCHIVE/
+mkdir -p /mnt/logdrive/PPPOES/
+mkdir -p /mnt/logdrive/STATIC/
+mkdir -p /mnt/logdrive/TEMP/
 
- cat /usr/bin/xhourly_log_format.sh
+mkdir -p /mnt/logdrive/PPPOES/ROUTER-IP
+mkdir -p /mnt/logdrive/STATIC/ROUTER-IP
+mkdir -p /mnt/logdrive/TEMP/ROUTER-IP
+
+
+
+
+cat /usr/bin/xhourly_log_format.sh
+
 #!/bin/bash
 date_time=`date -d '1 hour ago' "+%Y-%m-%d-%H"`
 
@@ -315,6 +342,10 @@ rsync -av /mnt/logdrive/TEMP/103-xxx-xx-68 /mnt/logdrive/PPPOES/
 #
 sleep 2
 rm -fr /mnt/logdrive/TEMP/103-xxx-xx-68/$date_time.txt
+
+
+
+
 
 
 
@@ -371,6 +402,7 @@ date --date="next day"
 systemctl restart rsyslog.service
 
 ################# some foot notes ##################################################
+
 
 
 
