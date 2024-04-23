@@ -3,10 +3,7 @@
 https://kifarunix.com/setup-rsyslog-server-on-ubuntu-20-04/
 https://yallalabs.com/linux/how-to-setup-loganalyzer-with-rsyslog-on-ubuntu-16-04-lts-ubuntu-18-04-lts/
 https://linoxide.com/how-to-setup-central-logging-server-using-rsyslog-on-ubuntu-20-04/
-
-
 https://docs.urduheim.de/ubuntu-tutorials/urduheim-syslog-server
-
 https://www.tecmint.com/install-rsyslog-centralized-logging-in-centos-ubuntu/
 https://www.xmodulo.com/configure-syslog-server-linux.html
 https://www.xmodulo.com/configure-rsyslog-client-centos.html
@@ -110,11 +107,9 @@ Step5: Restart rsyslog service
 
 -- https://luvpreetsingh.github.io/nginx-to-rsyslog/
 -- https://ipcorenetworks.blogspot.com/2021/09/how-to-install-configure-loganalyzer.html
-
 -- https://www.youtube.com/watch?v=d0zwT98MAgw
 
 
-cat /usr/bin/xhourly_log_format.sh
 
 
 root@log-abuzz:/mnt/logdrive/TEMP# cat /usr/bin/xhourly_log_format.sh
@@ -149,13 +144,17 @@ rm -fr /mnt/logdrive/TEMP/103-xxx-xx-68/$date_time.txt
 
 
 
-############### 2024 ######################################################
+############### 2024 ############# UBUNTU 22.04 ###################################
 
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 |Resolve Language+DNS Issue ||▼
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+apt update
+apt upgrade
+apt install rsyslog vim mtr nano
 
 
 apt -y install locales locales-all
@@ -188,8 +187,6 @@ echo "nameserver 8.8.8.8" > /etc/resolv.conf
 
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 vim /etc/rsyslog.conf
 
 ### Create Custome Log Format with the following....
@@ -207,8 +204,6 @@ $IncludeConfig /etc/rsyslog.d/*.conf
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 mkdir -p /mnt/logdrive/logs-collect
-
-
 
 
 sudo vim /etc/rsyslog.d/network-logs.conf
