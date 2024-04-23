@@ -117,7 +117,7 @@ Step5: Restart rsyslog service
 cat /usr/bin/xhourly_log_format.sh
 
 
-root@log-abuzz:/mnt/logdrive/logs-collect# cat /usr/bin/xhourly_log_format.sh
+root@log-abuzz:/mnt/logdrive/TEMP# cat /usr/bin/xhourly_log_format.sh
 #!/bin/bash
 date_time=`date -d '1 hour ago' "+%Y-%m-%d-%H"`
 
@@ -131,8 +131,6 @@ rsync -av /mnt/logdrive/TEMP/103-118-84-3 /mnt/logdrive/ARCHIVE/
 mv /mnt/logdrive/TEMP/103-118-84-3/static_$date_time.txt /mnt/logdrive/STATIC/103-118-84-3
 mv /mnt/logdrive/TEMP/103-118-84-3/pppoe_$date_time.txt /mnt/logdrive/PPPOES/103-118-84-3
 
-#
-#
 #sleep 2
 #rm -fr /mnt/logdrive/TEMP/103-118-84-3/$date_time.txt
 
@@ -145,3 +143,6 @@ rsync -av /mnt/logdrive/TEMP/103-118-84-68 /mnt/logdrive/PPPOES/
 #
 sleep 2
 rm -fr /mnt/logdrive/TEMP/103-118-84-68/$date_time.txt
+
+
+
