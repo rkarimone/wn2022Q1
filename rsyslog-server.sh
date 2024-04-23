@@ -121,28 +121,28 @@ root@log-abuzz:/mnt/logdrive/TEMP# cat /usr/bin/xhourly_log_format.sh
 #!/bin/bash
 date_time=`date -d '1 hour ago' "+%Y-%m-%d-%H"`
 
-### 103-118-84-03-ABUZZ-SPR-NMC ### STATIC
-cat /mnt/logdrive/logs-collect/103-118-84-03-ABUZZ-SPR-NMC/$date_time.log |grep VLAN | awk '{print $1,$2,$9,$15}' | sed -e 's/,//g' -e 's/(//' -e 's/)//' -e 's/->/ /g' |grep -v proto > /mnt/logdrive/TEMP/103-118-84-3/static_$date_time.txt
-### 103-118-84-03-ABUZZ-SPR-NMC ### PPPOE
-cat /mnt/logdrive/logs-collect/103-118-84-03-ABUZZ-SPR-NMC/$date_time.log |grep pppoe | awk '{print $1,$2,$4,$9,$15}' | sed -e 's/,//g' -e 's/in:<//g' -e 's/(//g' -e 's/->/ /g' -e 's/)//g' -e 's/>//g' |grep -v proto > /mnt/logdrive/TEMP/103-118-84-3/pppoe_$date_time.txt
+### 103-xxx-xx-03-ABUZZ-SPR-NMC ### STATIC
+cat /mnt/logdrive/logs-collect/103-xxx-xx-03-ABUZZ-SPR-NMC/$date_time.log |grep VLAN | awk '{print $1,$2,$9,$15}' | sed -e 's/,//g' -e 's/(//' -e 's/)//' -e 's/->/ /g' |grep -v proto > /mnt/logdrive/TEMP/103-xxx-xx-3/static_$date_time.txt
+### 103-xxx-xx-03-ABUZZ-SPR-NMC ### PPPOE
+cat /mnt/logdrive/logs-collect/103-xxx-xx-03-ABUZZ-SPR-NMC/$date_time.log |grep pppoe | awk '{print $1,$2,$4,$9,$15}' | sed -e 's/,//g' -e 's/in:<//g' -e 's/(//g' -e 's/->/ /g' -e 's/)//g' -e 's/>//g' |grep -v proto > /mnt/logdrive/TEMP/103-xxx-xx-3/pppoe_$date_time.txt
 
 
-rsync -av /mnt/logdrive/TEMP/103-118-84-3 /mnt/logdrive/ARCHIVE/
-mv /mnt/logdrive/TEMP/103-118-84-3/static_$date_time.txt /mnt/logdrive/STATIC/103-118-84-3
-mv /mnt/logdrive/TEMP/103-118-84-3/pppoe_$date_time.txt /mnt/logdrive/PPPOES/103-118-84-3
+rsync -av /mnt/logdrive/TEMP/103-xxx-xx-3 /mnt/logdrive/ARCHIVE/
+mv /mnt/logdrive/TEMP/103-xxx-xx-3/static_$date_time.txt /mnt/logdrive/STATIC/103-xxx-xx-3
+mv /mnt/logdrive/TEMP/103-xxx-xx-3/pppoe_$date_time.txt /mnt/logdrive/PPPOES/103-xxx-xx-3
 
 #sleep 2
-#rm -fr /mnt/logdrive/TEMP/103-118-84-3/$date_time.txt
+#rm -fr /mnt/logdrive/TEMP/103-xxx-xx-3/$date_time.txt
 
 
-### 103-118-84-68-ABUZZ-108515 ### PPPOE
-cat /mnt/logdrive/logs-collect/103-118-84-68-ABUZZ-108515/$date_time.log |grep pppoe |  awk '{print $1,$2,$4,$9,$15}' | sed -e 's/,//g' -e 's/in:<//g' -e 's/(//g' -e 's/->/ /g' -e 's/)//g' -e 's/>//g' |grep -v proto > /mnt/logdrive/TEMP/103-118-84-68/$date_time.txt
+### 103-xxx-xx-68-ABUZZ-108515 ### PPPOE
+cat /mnt/logdrive/logs-collect/103-xxx-xx-68-ABUZZ-108515/$date_time.log |grep pppoe |  awk '{print $1,$2,$4,$9,$15}' | sed -e 's/,//g' -e 's/in:<//g' -e 's/(//g' -e 's/->/ /g' -e 's/)//g' -e 's/>//g' |grep -v proto > /mnt/logdrive/TEMP/103-xxx-xx-68/$date_time.txt
 #
-rsync -av /mnt/logdrive/TEMP/103-118-84-68 /mnt/logdrive/ARCHIVE/
-rsync -av /mnt/logdrive/TEMP/103-118-84-68 /mnt/logdrive/PPPOES/
+rsync -av /mnt/logdrive/TEMP/103-xxx-xx-68 /mnt/logdrive/ARCHIVE/
+rsync -av /mnt/logdrive/TEMP/103-xxx-xx-68 /mnt/logdrive/PPPOES/
 #
 sleep 2
-rm -fr /mnt/logdrive/TEMP/103-118-84-68/$date_time.txt
+rm -fr /mnt/logdrive/TEMP/103-xxx-xx-68/$date_time.txt
 
 
 
@@ -270,6 +270,13 @@ chmod -R 777 /mnt/logdrive
 sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
 
 
+systemctl disable ssh.socket
+systemctl enable ssh.service
+systemctl restart ssh.service
+
+## For lxc container need to execute the following two lines ^
+
+
 sudo systemctl restart rsyslog
 sudo systemctl status rsyslog
 
@@ -282,13 +289,88 @@ sudo systemctl status rsyslog
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+ cat /usr/bin/xhourly_log_format.sh
+#!/bin/bash
+date_time=`date -d '1 hour ago' "+%Y-%m-%d-%H"`
+
+### 103-xxx-xx-03-ABUZZ-SPR-NMC ### STATIC
+cat /mnt/logdrive/logs-collect/103-xxx-xx-03-ABUZZ-SPR-NMC/$date_time.log |grep VLAN | awk '{print $1,$2,$9,$15}' | sed -e 's/,//g' -e 's/(//' -e 's/)//' -e 's/->/ /g' |grep -v proto > /mnt/logdrive/TEMP/103-xxx-xx-3/static_$date_time.txt
+### 103-xxx-xx-03-ABUZZ-SPR-NMC ### PPPOE
+cat /mnt/logdrive/logs-collect/103-xxx-xx-03-ABUZZ-SPR-NMC/$date_time.log |grep pppoe | awk '{print $1,$2,$4,$9,$15}' | sed -e 's/,//g' -e 's/in:<//g' -e 's/(//g' -e 's/->/ /g' -e 's/)//g' -e 's/>//g' |grep -v proto > /mnt/logdrive/TEMP/103-xxx-xx-3/pppoe_$date_time.txt
+
+
+rsync -av /mnt/logdrive/TEMP/103-xxx-xx-3 /mnt/logdrive/ARCHIVE/
+mv /mnt/logdrive/TEMP/103-xxx-xx-3/static_$date_time.txt /mnt/logdrive/STATIC/103-xxx-xx-3
+mv /mnt/logdrive/TEMP/103-xxx-xx-3/pppoe_$date_time.txt /mnt/logdrive/PPPOES/103-xxx-xx-3
+
+#sleep 2
+#rm -fr /mnt/logdrive/TEMP/103-xxx-xx-3/$date_time.txt
+
+
+### 103-xxx-xx-68-ABUZZ-108515 ### PPPOE
+cat /mnt/logdrive/logs-collect/103-xxx-xx-68-ABUZZ-108515/$date_time.log |grep pppoe |  awk '{print $1,$2,$4,$9,$15}' | sed -e 's/,//g' -e 's/in:<//g' -e 's/(//g' -e 's/->/ /g' -e 's/)//g' -e 's/>//g' |grep -v proto > /mnt/logdrive/TEMP/103-xxx-xx-68/$date_time.txt
+#
+rsync -av /mnt/logdrive/TEMP/103-xxx-xx-68 /mnt/logdrive/ARCHIVE/
+rsync -av /mnt/logdrive/TEMP/103-xxx-xx-68 /mnt/logdrive/PPPOES/
+#
+sleep 2
+rm -fr /mnt/logdrive/TEMP/103-xxx-xx-68/$date_time.txt
+
+
+
+################# some foot notes ##################################################
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# https://betterstack.com/community/guides/logging/rsyslog-explained/
+# https://www.suse.com/support/kb/doc/?id=000019760
+
+> > >> *$template TmplNationalIP_PL,
+> > >> "/var/log/NIPFW/MX480/CGNAT_PL_%$year%.%$month%.%$day%"*
+> > >> *if ($msg contains 'OR_NAT' and $msg contains '55.91.165.') then
+> > >> ?TmplNationalIP_PL*
+> > >> *& ~*
+
+
+$template RemoteInputLogs, "/mnt/logdrive/logs-collect/%HOSTNAME%/%$year%-%$month%-%$day%-%$hour%.log"
+if ($msg contains 'established') then
+*.* ?RemoteInputLogs
+
+
+ vim /etc/logrotate.d/network-log
+
+
+/mnt/logdrive/logs-collect/103-xx-xxxx-1-RBD-CORE/*.log
+{
+        rotate 50
+        hourly
+        copytruncate
+        missingok
+        notifempty
+        maxage 30
+        sharedscripts
+        postrotate
+        sudo systemctl restart rsyslog.service
+        endscript
+}
+
+
+
+# https://www.cyberciti.biz/tips/linux-unix-get-yesterdays-tomorrows-date.html
+
+date -d 'now' "+%Y-%m-%d-%H"
+date -d '1 hour ago' "+%Y-%m-%d-%H"
+date -d 'next day' "+%Y-%m-%d-%H"
+
+date --date="-1 days ago"
+date --date="next day"
 
 
 
 
+systemctl restart rsyslog.service
 
-
-
+################# some foot notes ##################################################
 
 
 
