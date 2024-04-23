@@ -146,3 +146,152 @@ rm -fr /mnt/logdrive/TEMP/103-118-84-68/$date_time.txt
 
 
 
+
+
+
+############### 2024 ######################################################
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+|Resolve Language+DNS Issue ||▼
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+apt -y install locales locales-all
+localectl set-locale LANG=en_US.UTF-8 LANGUAGE="en_US:en"
+export LANG=en_US.UTF-8
+
+cd /root/
+
+echo "export LANG=en_US.UTF-8" >> .profile
+echo "export LANG=en_US.UTF-8" >> .bashrc
+
+
+
+# Fix default dns resolver #
+
+sudo systemctl stop systemd-resolved
+sudo systemctl disable systemd-resolved.service
+rm -fr /etc/resolv.conf
+touch /etc/resolv.conf
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+|| LOGGING TO SYSLOG with Proper TimeStamp ||▼
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+vim /etc/rsyslog.conf
+
+### Create Custome Log Format with the following....
+#
+$template myformat,"%TIMESTAMP:1:10:date-rfc3339% %TIMESTAMP:19:12:date-rfc3339% %syslogtag%%msg%\n"
+$ActionFileDefaultTemplate myformat
+
+# Include all config files in /etc/rsyslog.d/
+#
+$IncludeConfig /etc/rsyslog.d/*.conf
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+|| MODIFYING OTHER CONFIGURATION ||▼
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+mkdir -p /mnt/logdrive/logs-collect
+
+
+
+
+sudo vim /etc/rsyslog.d/network-logs.conf
+
+## /etc/rsyslog.d/network-logs.conf
+#################
+#### MODULES ####
+#################
+
+# provides UDP syslog reception
+module(load="imudp")
+input(type="imudp" port="514")
+
+# provides TCP syslog reception
+module(load="imtcp")
+input(type="imtcp" port="514")
+
+#Custom template to generate the log filename dynamically based on the client's IP address or Hostname.
+$template RemoteInputLogs, "/mnt/logdrive/logs-collect/%FROMHOST%.log"
+*.* ?RemoteInputLogs
+
+
+
+########### LOG ROTATION #########################################
+
+root@log-abuzz:~# cat /etc/logrotate.d/rsyslog
+/var/log/syslog
+/var/log/mail.info
+/var/log/mail.warn
+/var/log/mail.err
+/var/log/mail.log
+/var/log/daemon.log
+/var/log/kern.log
+/var/log/auth.log
+/var/log/user.log
+/var/log/lpr.log
+/var/log/cron.log
+/var/log/debug
+/var/log/messages
+/mnt/logdrive/logs-collect/*.log
+{
+        rotate 8
+        daily
+        missingok
+        notifempty
+        compress
+        delaycompress
+        sharedscripts
+        postrotate
+        /usr/lib/rsyslog/rsyslog-rotate
+        endscript
+}
+
+
+########### LOG ROTATION #########################################
+
+## For lxc container need to execute the following two lines
+chmod -R 777 /mnt/logdrive
+sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
+
+
+sudo systemctl restart rsyslog
+sudo systemctl status rsyslog
+
+
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+|Log Processing Scripts ||▼
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
