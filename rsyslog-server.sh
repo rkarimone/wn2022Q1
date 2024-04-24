@@ -221,9 +221,12 @@ input(type="imudp" port="514")
 module(load="imtcp")
 input(type="imtcp" port="514")
 
-#Custom template to generate the log filename dynamically based on the client's IP address or Hostname.
-$template RemoteInputLogs, "/mnt/logdrive/logs-collect/%FROMHOST%.log"
+
+########### new log collection method #################
+$template RemoteInputLogs, "/mnt/logdrive/logs-collect/%HOSTNAME%/%$year%-%$month%-%$day%-%$hour%.log"
+if ($msg contains 'established') then
 *.* ?RemoteInputLogs
+
 
 
 
