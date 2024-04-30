@@ -9,8 +9,13 @@
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # RESTORING CLASSIC NETWORK CONFIGURATION OPTION
+wget -qO - mirrors.ubuntu.com/mirrors.txt
+	https://mirror.xeonbd.com/ubuntu-archive/
+	http://mirror.dhakacom.com/ubuntu-archive/
+	http://archive.ubuntu.com/ubuntu/
 
-sudo vim /etc/apt/sources.list ; change mirror to 'mirror.amberit.com.bd' | 'mirror.0x.sg'
+sudo apt update
+sudo vim.tiny /etc/apt/sources.list ; change mirror to "https://mirror.xeonbd.com/ubuntu-archive/"
 sudo apt update
 sudo apt full-upgrade
 sudo apt install -y ifupdown vim net-tools
@@ -52,6 +57,7 @@ iface eth0 inet static
 
 // "Save+Exit"
 
+apt install --install-recommends linux-generic-hwe-22.04
 apt install --install-recommends linux-generic-hwe-20.04
 sudo apt autoremove --purge linux-generic-hwe-20.04 linux-oem-20.04 linux-hwe-* linux-oem-* linux-modules-5.4* linux-modules-5.8.0-* linux-modules-5.6.0-*
 
@@ -788,7 +794,7 @@ mount -a
 
 // "Save+Exit"
 
-apt -y install locales-all
+apt -y install locales locales-all
 localectl set-locale LANG=en_GB.UTF-8 LANGUAGE="en_GB:en"
 export LANG=en_GB.UTF-8
 
@@ -799,6 +805,21 @@ vim .bashrc //export LANG=en_GB.UTF-8
 
 source .profile
 source .bashrc
+
+################### 
+
+apt -y install locales locales-all
+localectl set-locale LANG=en_US.UTF-8 LANGUAGE="en_US:en"
+export LANG=en_US.UTF-8
+
+cd /root/
+echo  "LANG=en_US.UTF-8" >> .profile 
+echo  "LANG=en_US.UTF-8" >> .bashrc
+
+source .profile
+source .bashrc
+
+
 
 
 
