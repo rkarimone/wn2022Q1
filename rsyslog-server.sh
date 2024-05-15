@@ -319,9 +319,9 @@ cat /usr/bin/xhourly_log_format.sh
 date_time=`date -d '1 hour ago' "+%Y-%m-%d-%H"`
 
 ### 103-xxx-xx-03-ABUZZ-SPR-NMC ### STATIC
-cat /mnt/logdrive/logs-collect/103-xxx-xx-03-ABUZZ-SPR-NMC/$date_time.log |grep VLAN | awk '{print $1,$2,$9,$15}' | sed -e 's/,//g' -e 's/(//' -e 's/)//' -e 's/->/ /g' |grep -v proto > /mnt/logdrive/TEMP/103-xxx-xx-3/static_$date_time.txt
+cat /mnt/logdrive/logs-collect/103-xxx-xx-03-ABUZZ-SPR-NMC/$date_time.log |grep VLAN | awk '{print $1,$2,$9,$15}' | sed -e 's/,//g' -e 's/(//' -e 's/)//' -e 's/->/ /g' |grep -v proto |grep -v message > /mnt/logdrive/TEMP/103-xxx-xx-3/static_$date_time.txt
 ### 103-xxx-xx-03-ABUZZ-SPR-NMC ### PPPOE
-cat /mnt/logdrive/logs-collect/103-xxx-xx-03-ABUZZ-SPR-NMC/$date_time.log |grep pppoe | awk '{print $1,$2,$4,$9,$15}' | sed -e 's/,//g' -e 's/in:<//g' -e 's/(//g' -e 's/->/ /g' -e 's/)//g' -e 's/>//g' |grep -v proto > /mnt/logdrive/TEMP/103-xxx-xx-3/pppoe_$date_time.txt
+cat /mnt/logdrive/logs-collect/103-xxx-xx-03-ABUZZ-SPR-NMC/$date_time.log |grep pppoe | awk '{print $1,$2,$4,$9,$15}' | sed -e 's/,//g' -e 's/in:<//g' -e 's/(//g' -e 's/->/ /g' -e 's/)//g' -e 's/>//g' |grep -v proto |grep -v message > /mnt/logdrive/TEMP/103-xxx-xx-3/pppoe_$date_time.txt
 
 
 rsync -av /mnt/logdrive/TEMP/103-xxx-xx-3 /mnt/logdrive/ARCHIVE/
@@ -333,7 +333,7 @@ mv /mnt/logdrive/TEMP/103-xxx-xx-3/pppoe_$date_time.txt /mnt/logdrive/PPPOES/103
 
 
 ### 103-xxx-xx-68-ABUZZ-108515 ### PPPOE
-cat /mnt/logdrive/logs-collect/103-xxx-xx-68-ABUZZ-108515/$date_time.log |grep pppoe |  awk '{print $1,$2,$4,$9,$15}' | sed -e 's/,//g' -e 's/in:<//g' -e 's/(//g' -e 's/->/ /g' -e 's/)//g' -e 's/>//g' |grep -v proto > /mnt/logdrive/TEMP/103-xxx-xx-68/$date_time.txt
+cat /mnt/logdrive/logs-collect/103-xxx-xx-68-ABUZZ-108515/$date_time.log |grep pppoe |  awk '{print $1,$2,$4,$9,$15}' | sed -e 's/,//g' -e 's/in:<//g' -e 's/(//g' -e 's/->/ /g' -e 's/)//g' -e 's/>//g' |grep -v proto |grep -v message > /mnt/logdrive/TEMP/103-xxx-xx-68/$date_time.txt
 #
 rsync -av /mnt/logdrive/TEMP/103-xxx-xx-68 /mnt/logdrive/ARCHIVE/
 rsync -av /mnt/logdrive/TEMP/103-xxx-xx-68 /mnt/logdrive/PPPOES/
