@@ -406,4 +406,27 @@ systemctl restart rsyslog.service
 
 
 
+root@ist-sys-log1:/mnt/logdrive/logs-collect/172-28-56-8-IST-GW1# cat /usr/bin/xhourly_log_format.sh 
+#!/bin/bash
+date_time=`date -d '1 hour ago' "+%Y-%m-%d-%H"`
+
+### 172-28-56-8-IST-GW1 ### PPPOE
+cat /mnt/logdrive/logs-collect/172-28-56-8-IST-GW1/$date_time.log  |grep pppoe | awk '{print $1,$2,$4,$9,$13}' | sed -e 's/,//g' -e 's/in:<//g' -e 's/(//g' -e 's/->/ /g' -e 's/)//g' -e 's/>//g' -e 's/pppoe-//g' |grep -v dnat |grep -v proto |grep -v message > /mnt/logdrive/TEMP/172-28-56-8-IST-GW1/$date_time.txt
+sleep 1
+rsync -av /mnt/logdrive/TEMP/172-28-56-8-IST-GW1 /mnt/logdrive/ARCHIVE/
+sleep 1
+mv /mnt/logdrive/TEMP/172-28-56-8-IST-GW1/$date_time.txt /mnt/logdrive/EXPORT/172-28-56-8-IST-GW1/
+
+
+
+### 172-28-56-3-IST-GW2 ### PPPOE
+cat /mnt/logdrive/logs-collect/172-28-56-3-IST-GW2/$date_time.log  |grep pppoe | awk '{print $1,$2,$4,$9,$13}' | sed -e 's/,//g' -e 's/in:<//g' -e 's/(//g' -e 's/->/ /g' -e 's/)//g' -e 's/>//g' -e 's/pppoe-//g' |grep -v dnat |grep -v proto |grep -v message > /mnt/logdrive/TEMP/172-28-56-3-IST-GW2/$date_time.txt
+sleep 1
+rsync -av /mnt/logdrive/TEMP/172-28-56-3-IST-GW2 /mnt/logdrive/ARCHIVE/
+sleep 1
+mv /mnt/logdrive/TEMP/172-28-56-3-IST-GW2/$date_time.txt /mnt/logdrive/EXPORT/172-28-56-3-IST-GW2/
+
+
+
+
 
