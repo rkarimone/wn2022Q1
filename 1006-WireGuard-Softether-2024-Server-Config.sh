@@ -271,6 +271,7 @@ WGUI_DEFAULT_CLIENT_ALLOWED_IPS=100.123.8.0/23
 WGUI_DEFAULT_CLIENT_ENABLE_AFTER_CREATION=true
 
 
+<b> ########### </b>
 vim /etc/systemd/system/wireguard-ui-daemon.service
 
 [Unit]
@@ -287,19 +288,7 @@ EnvironmentFile=/opt/wireguard-ui/.env
 ExecStart=/opt/wireguard-ui/wireguard-ui -bind-address "publicip.78:8083"
 
 [Install]
-WantedBy=multi-user.targe
-
-chmod +x /etc/systemd/system/wireguard-ui-daemon.service
-
-
-sudo systemctl daemon-reload
-sudo systemctl enable wireguard-ui-daemon.service
-sudo systemctl start wireguard-ui-daemon.service
-netstat -tulpn
-sudo systemctl daemon-reload
-
-
-
+WantedBy=multi-user.target
 
 sudo vim /etc/systemd/system/wgui.service
 [Unit]
@@ -324,10 +313,28 @@ PathModified=/etc/wireguard/wg0.conf
 [Install]
 WantedBy=multi-user.target
 
+
+
+chmod +x /etc/systemd/system/wireguard-ui-daemon.service
 chmod +x /etc/systemd/system/wgui.*
-sudo systemctl daemon-reload
+
+sudo systemctl enable wireguard-ui-daemon.service
 sudo systemctl enable wgui.{path,service}
+
 sudo systemctl daemon-reload
+
+sudo systemctl start wgui.path
+sudo systemctl start wgui.service
+sudo systemctl start wireguard-ui-daemon.service
+
+sudo systemctl status wgui.path
+sudo systemctl status wgui.service
+sudo systemctl status wireguard-ui-daemon.service
+
+netstat -tulpn
+
+
+
 
 
 ### https://help.clouding.io/hc/en-us/articles/8492891803932-How-to-change-Wireguard-UI-panel-password ####
@@ -360,9 +367,6 @@ Table = auto
 
 
 sudo reboot 
-
-
-
 
 
 
