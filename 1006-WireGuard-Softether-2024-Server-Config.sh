@@ -271,7 +271,8 @@ WGUI_DEFAULT_CLIENT_ALLOWED_IPS=100.123.8.0/23
 WGUI_DEFAULT_CLIENT_ENABLE_AFTER_CREATION=true
 
 
-<b> ########### </b>
+|||||||||||| wg-service-01 |||||||||||||||||||||||||||||||||||||||||||
+
 vim /etc/systemd/system/wireguard-ui-daemon.service
 
 [Unit]
@@ -290,6 +291,8 @@ ExecStart=/opt/wireguard-ui/wireguard-ui -bind-address "publicip.78:8083"
 [Install]
 WantedBy=multi-user.target
 
+
+|||||||||||| wg-service-02 |||||||||||||||||||||||||||||||||||||||||||
 sudo vim /etc/systemd/system/wgui.service
 [Unit]
 Description=Restart WireGuard
@@ -303,6 +306,8 @@ ExecStart=/usr/bin/systemctl restart wg-quick@wg0.service
 RequiredBy=wgui.path
 
 
+|||||||||||| wg-service-03 |||||||||||||||||||||||||||||||||||||||||||
+
 sudo vim /etc/systemd/system/wgui.path
 [Unit]
 Description=Watch /etc/wireguard/wg0.conf for_changes
@@ -314,6 +319,7 @@ PathModified=/etc/wireguard/wg0.conf
 WantedBy=multi-user.target
 
 
+|||||||||||| wg-service-start |||||||||||||||||||||||||||||||||||||||
 
 chmod +x /etc/systemd/system/wireguard-ui-daemon.service
 chmod +x /etc/systemd/system/wgui.*
@@ -334,7 +340,7 @@ sudo systemctl status wireguard-ui-daemon.service
 netstat -tulpn
 
 
-
+|||||||||||| wg-service-fix-login |||||||||||||||||||||||||||||||||||||||||||
 
 
 ### https://help.clouding.io/hc/en-us/articles/8492891803932-How-to-change-Wireguard-UI-panel-password ####
@@ -350,6 +356,7 @@ sudo vim /opt/wireguard-ui/db/users/wgadmin.json    ######## RESETING PASSWORD
 
 [access web-url]  http://publiccip.78:8083/
 
+|||||||||||| wg-service-fix-login |||||||||||||||||||||||||||||||||||||||||||
 
 
 sudo vim /etc/wireguard/wg0.conf
