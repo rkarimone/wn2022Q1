@@ -1664,8 +1664,8 @@ iptables --table nat --delete-chain
 iptables -t mangle --delete-chain
 
 
+iptables -t nat -A POSTROUTING -s 192.168.172.0/24 -j SNAT --to 103.x.x.13
 #iptables --table nat --append POSTROUTING --out-interface enp1s0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 192.168.172.0/24 -j SNAT --to 103.144.200.13
 #iptables -t nat -A POSTROUTING -o enp1s0 -s 192.168.1.3 -j SNAT --to 10.1.1.9
 
 
