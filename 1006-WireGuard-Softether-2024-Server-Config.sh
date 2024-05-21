@@ -289,7 +289,7 @@ Group=root
 Type=simple
 WorkingDirectory=/opt/wireguard-ui
 EnvironmentFile=/opt/wireguard-ui/.env
-ExecStart=/opt/wireguard-ui/wireguard-ui -bind-address "publicip.78:8083"
+ExecStart=/opt/wireguard-ui/wireguard-ui -bind-address "0.0.0.0:8443"
 
 [Install]
 WantedBy=multi-user.target
@@ -385,7 +385,32 @@ systemctl status wg-quick@wg0
 
 
 
+vim /opt/vpn-nat.sh
+
+#!/bin/bash
+iptables -F INPUT
+iptables -F OUTPUT
+iptables -F FORWARD
+iptables -F -t mangle
+iptables -F -t nat
+iptables -F
+iptables -X
+iptables -Z
+iptables -t nat -F
+iptables -t nat -X
+iptables -t nat -Z
+iptables --table nat -F
+iptables --delete-chain
+iptables --table nat --delete-chain
+iptables -t mangle --delete-chain
 
 
+
+#iptables -t nat -A POSTROUTING -s 100.72.92.3/32 -j SNAT --to <PUBLIC-IP>
+iptables --table nat --append POSTROUTING -s 100.72.92.0/22 --out-interface  enp1s0f3 -j MASQUERADE
+
+# enp1s0f3 is Public Internet Interface #
+
+chmod +x /opt/vpn-nat.sh
 
 ############ 2024 #### with web-gui ####################
