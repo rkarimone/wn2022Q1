@@ -187,6 +187,39 @@ net.ipv6.conf.lo.disable_ipv6 = 1
 
 sudo sysctl -p
 
+### sysctl.conf ## for Lxc Container ##### PROXMOX
+net.ipv4.tcp_no_metrics_save = 1
+net.ipv4.tcp_window_scaling = 1
+net.ipv4.tcp_timestamps = 1
+net.ipv4.tcp_sack = 1
+net.ipv4.tcp_max_syn_backlog = 100000
+net.ipv4.tcp_congestion_control=bbr
+net.ipv4.tcp_mtu_probing=1
+net.ipv4.tcp_synack_retries = 2
+net.ipv4.ip_local_port_range = 1024 65535
+net.ipv4.tcp_rfc1337 = 1
+net.ipv4.tcp_fin_timeout = 15
+net.core.somaxconn = 100000
+net.core.optmem_max = 25165824
+net.ipv4.tcp_rmem = 20480 12582912 25165824
+net.ipv4.udp_rmem_min = 16384
+net.ipv4.tcp_max_tw_buckets = 1440000
+net.ipv4.tcp_tw_reuse = 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 apt install python3-pip
 pip3 install bpytop --upgrade
 
