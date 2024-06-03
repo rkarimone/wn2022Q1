@@ -216,3 +216,111 @@ apt install mbuffer
 zfs send -R n1vol0/n1vms@20240127-215024 | mbuffer -s 128k -m 4G -O 10.10.20.2:8000
 
 
+
+###################
+
+
+root@soltion-bd-ip3:~# 
+root@soltion-bd-ip3:~# 
+root@soltion-bd-ip3:~# cat /etc/crontab 
+# /etc/crontab: system-wide crontab
+# Unlike any other crontab you don't have to run the `crontab'
+# command to install the new version when you edit this file
+# and files in /etc/cron.d. These files also have username fields,
+# that none of the other crontabs do.
+
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# m h dom mon dow user	command
+17 *	* * *	root    cd / && run-parts --report /etc/cron.hourly
+25 6	* * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
+47 6	* * 7	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
+52 6	1 * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
+#
+30 */2	* * *	root	/volume1/sysconfig/volume1-auto-replica-ip3-to-ip2-task.sh
+root@soltion-bd-ip3:~# cat /volume1/sysconfig/volume1-auto-replica-ip3-to-ip2-task.sh
+#!/bin/bash
+HOSTS="100.66.33.12"
+COUNT=10
+for myHost in $HOSTS
+do
+  count=$(ping -c $COUNT -i 0.3 $myHost | grep 'received' | awk -F',' '{ print $2 }' | awk '{ print $1 }')
+  if [ $count -ne 0 ]; then
+     /volume1/sysconfig/volume1-auto-replica-ip3-to-ip2-run.sh
+    echo "[$(date)] [ OK OK! ] SLBD-IP3-TO-IP2 REPLICATION-STRTED" >> /volume1/sysconfig/replication.log
+  else
+    echo "[$(date)] [ FAILED ] SLBD-IP3-TO-IP2 REPLICATION FAILED" >> /volume1/sysconfig/replication.log
+  fi
+done
+
+
+
+###
+
+root@soltion-bd-ip3:~# cat /volume1/sysconfig/volume1-auto-replica-ip3-to-ip2-task.sh
+#!/bin/bash
+HOSTS="100.66.33.12"
+COUNT=10
+for myHost in $HOSTS
+do
+  count=$(ping -c $COUNT -i 0.3 $myHost | grep 'received' | awk -F',' '{ print $2 }' | awk '{ print $1 }')
+  if [ $count -ne 0 ]; then
+     /volume1/sysconfig/volume1-auto-replica-ip3-to-ip2-run.sh
+    echo "[$(date)] [ OK OK! ] SLBD-IP3-TO-IP2 REPLICATION-STRTED" >> /volume1/sysconfig/replication.log
+  else
+    echo "[$(date)] [ FAILED ] SLBD-IP3-TO-IP2 REPLICATION FAILED" >> /volume1/sysconfig/replication.log
+  fi
+done
+root@soltion-bd-ip3:~# cat /volume1/sysconfig/volume1-auto-replica-ip3-to-ip2-run.sh
+#!/bin/bash
+nohup sh /volume1/sysconfig/volume1-auto-replica-ip3-to-ip2-script.sh &
+root@soltion-bd-ip3:~# cat /volume1/sysconfig/volume1-auto-replica-ip3-to-ip2-script.sh 
+####### SNAPSHOT+REPLICATION-WORKS######################
+
+date_time=`date +%Y%m%d-%H%M%S`;
+
+######## CHECKMK-NMS ####
+zfs list -rt snapshot -o name |grep volume1/containers/checkmknms@ |sort |head -n -10 |xargs -n 1 zfs destroy -r 2> /dev/null;
+zfs snapshot -r volume1/containers/checkmknms@$date_time;
+new_snap_id="volume1/containers/checkmknms@$date_time";
+old_snap_id=`cat /volume1/sysconfig/volume1_lsnap_id.txt`;
+zfs send -I volume1/containers/checkmknms@$old_snap_id -R $new_snap_id | ssh root@100.66.33.12 -p 9898 zfs recv -dvF volume1;
+
+######## fmdns2 ####
+zfs list -rt snapshot -o name |grep volume1/containers/fmdns2@ |sort |head -n -10 |xargs -n 1 zfs destroy -r 2> /dev/null;
+zfs snapshot -r volume1/containers/fmdns2@$date_time;
+new_snap_id="volume1/containers/fmdns2@$date_time";
+old_snap_id=`cat /volume1/sysconfig/volume1_lsnap_id.txt`;
+zfs send -I volume1/containers/fmdns2@$old_snap_id -R $new_snap_id | ssh root@100.66.33.12 -p 9898 zfs recv -dvF volume1;
+
+######## ns2 ####
+zfs list -rt snapshot -o name |grep volume1/containers/ns2@ |sort |head -n -10 |xargs -n 1 zfs destroy -r 2> /dev/null;
+zfs snapshot -r volume1/containers/ns2@$date_time;
+new_snap_id="volume1/containers/ns2@$date_time";
+old_snap_id=`cat /volume1/sysconfig/volume1_lsnap_id.txt`;
+zfs send -I volume1/containers/ns2@$old_snap_id -R $new_snap_id | ssh root@100.66.33.12 -p 9898 zfs recv -dvF volume1;
+
+######## VPN ####
+zfs list -rt snapshot -o name |grep volume1/vpn@ |sort |head -n -10 |xargs -n 1 zfs destroy -r 2> /dev/null;
+zfs snapshot -r volume1/vpn@$date_time;
+new_snap_id="volume1/vpn@$date_time";
+old_snap_id=`cat /volume1/sysconfig/volume1_lsnap_id.txt`;
+zfs send -I volume1/vpn@$old_snap_id -R $new_snap_id | ssh root@100.66.33.12 -p 9898 zfs recv -dvF volume1;
+
+######## ippbx ####
+zfs list -rt snapshot -o name |grep volume1/ippbx@ |sort |head -n -10 |xargs -n 1 zfs destroy -r 2> /dev/null;
+zfs snapshot -r volume1/ippbx@$date_time;
+new_snap_id="volume1/ippbx@$date_time";
+old_snap_id=`cat /volume1/sysconfig/volume1_lsnap_id.txt`;
+zfs send -I volume1/ippbx@$old_snap_id -R $new_snap_id | ssh root@100.66.33.12 -p 9898 zfs recv -dvF volume1;
+
+####
+echo $date_time > /volume1/sysconfig/volume1_lsnap_id.txt;
+
+
+
+
+
+
+
