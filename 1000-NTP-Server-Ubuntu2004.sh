@@ -328,3 +328,15 @@ leapsectz right/UTC
 /system ntp client servers add address=103.12.205.40
 
 
+
+
+
+ip firewall nat add action=src-nat chain=srcnat comment=___bd_ntp_server1___ dst-address=182.16.156.0/24 to-addresses=103.109.214.65
+ip firewall nat add action=src-nat chain=srcnat comment=___bd_ntp_server2___ dst-address=27.54.117.0/24 to-addresses=103.109.214.65
+system clock set time-zone-name=Asia/Dhaka
+system ntp client set enabled=yes
+system ntp client servers add address=182.16.156.246
+system ntp client servers add address=182.16.156.5
+system ntp client servers add address=27.54.117.72
+
+
