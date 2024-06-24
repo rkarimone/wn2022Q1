@@ -340,3 +340,36 @@ system ntp client servers add address=182.16.156.5
 system ntp client servers add address=27.54.117.72
 
 
+
+
+## SG GOOGLE SERVERS ## time4.google.com
+ip firewall nat add action=src-nat chain=srcnat comment=___sg_ntp_server3___ dst-address=216.239.35.0/24 to-addresses=a.b.c.d
+system ntp client servers add address=216.239.35.12
+
+rkarim@rfskypc:~$ nslookup time.cloudflare.com
+Server:		8.8.8.8
+Address:	8.8.8.8#53
+
+Non-authoritative answer:
+Name:	time.cloudflare.com
+Address: 162.159.200.1
+Name:	time.cloudflare.com
+Address: 162.159.200.123
+Name:	time.cloudflare.com
+Address: 2606:4700:f1::1
+Name:	time.cloudflare.com
+Address: 2606:4700:f1::123
+
+rkarim@rfskypc:~$ 
+
+
+
+ALTER TABLE radacct CHANGE COLUMN nasportid nasportid VARCHAR(32);
+
+
+
+
+ipfw add pipe 80 ip4 from any to any in via ix0                                 
+ipfw pipe 80 config bw 550Mbits/s type fq_codel quantum 1514 ecn
+
+ALTER TABLE radacct CHANGE COLUMN nasportid nasportid VARCHAR(32);
