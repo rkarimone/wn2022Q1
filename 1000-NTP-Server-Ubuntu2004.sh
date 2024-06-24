@@ -373,3 +373,7 @@ ipfw add pipe 80 ip4 from any to any in via ix0
 ipfw pipe 80 config bw 550Mbits/s type fq_codel quantum 1514 ecn
 
 ALTER TABLE radacct CHANGE COLUMN nasportid nasportid VARCHAR(32);
+
+
+https://www.percona.com/blog/how-to-alter-a-varchar-column-online-in-mysql-caveats-and-solutions/
+
