@@ -358,3 +358,16 @@ network:
 
 
 ##############2024 #################
+
+
+*How disable the file transfer between the host machine and windows virtual machine*
+
+
+With Windows Server, you can disable File Transfer through RDP by managing the 'Remote Desktop Session Host' properties - This will be through Group Policy.
+
+In Windows, search for 'Edit Group Policy'
+In the Local Group Policy Editor, navigate to 'Computer Configuration' > 'Administrative Templates' > 'Windows Components' > 'Remote Desktop Services' > 'Remote Desktop Session Host' > 'Device and Resource Redirection'.
+Then set 'Do not allow Clipboard redirection' to 'Enabled'. You can also set 'Do not allow drive redirection' to 'Enabled' if you want to prevent the Virtual Machine from accessing local drives.
+
+
+
