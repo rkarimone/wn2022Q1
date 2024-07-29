@@ -134,7 +134,7 @@ sudo systemctl status rsyslog
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-|MIKROTIK-CONFIGURATION ||▼
+|MIKROTIK-CONFIGURATION ||▼ (OPTION-1)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Config In MikrotTik
@@ -148,6 +148,15 @@ ip firewall mangle add action=log chain=prerouting connection-state=established 
 
 #ip firewall mangle add action=log chain=prerouting connection-state=established protocol=tcp src-address=10.0.0.0/8 tcp-flags=fin
 #ppp profile set *0 on-up=":foreach dev in=[ppp active print detail as-value where name=\$user ] do={\r\n    /log info (\"PPPLOG \$user \" . (\$dev->\"caller-id\") . \" \" . (\$dev->\"address\"));\r\n}"
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+|MIKROTIK-CONFIGURATION ||▼ (OPTION-2)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/ip firewall filter add action=log chain=forward connection-state=new dst-port=80,443 protocol=tcp out-interface=vlan3520-IPT
+/system logging action add name=LOG252 remote=157.15.61.151 target=remote src-address=103.138.250.73
+/system logging add action=LOG252 topics=firewall
+/user add name=logapi group=read password=GoodPw@20xx
 
 
 
