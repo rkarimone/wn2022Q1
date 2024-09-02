@@ -76,7 +76,7 @@ The script performs the following tasks:
 // Installation Steps //
 // To install the PowerShell script as a Windows service using NSSM: //
 
-- Download NSSM (Non-Sucking Service Manager) from the official repository: https://nssm.cc/download
+- Download NSSM (Non-Sucking Service Manager) from the official repository: https://nssm.cc/download | (https://nssm.cc/builds)
 	Extract as : C:\nssm\win64
 - Extract the downloaded ZIP file and navigate to the extracted directory.
 - Open a command prompt with administrator privileges and navigate to the NSSM directory.
