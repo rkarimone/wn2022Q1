@@ -293,15 +293,22 @@ mv /mnt/logdrive/TEMP/172-28-56-3-IST-GW2/$date_time.txt /mnt/logdrive/EXPORT/17
 
 
 ########### setup for netelastics #############
-root@tsllog:/mnt/logdrive/logs-collect/NetElastic# cat /usr/bin/xhourly_log_format.sh 
+root@tsllog:~# cat /usr/bin/xhourly_log_format.sh 
 #!/bin/bash
 date_time=`date -d '1 hour ago' "+%Y-%m-%d-%H"`
 
 ### NetElastic_Server_01 ### NAT-LOG ###
 cat /mnt/logdrive/logs-collect/NetElastic/$date_time.log | awk '{print $1,$2,$9,$11,$10,$12,$14}' | sed -e 's/ISADDR/SOURCE_IP/g' -e 's/ISPORT/SOURCE_PORT/g' -e 's/IDADDR/DESTINATION_IP/g' -e 's/IDPORT/DESTNINATION_PORT/g' -e 's/XSADDR/NAT_IP/g' > /mnt/logdrive/TEMP/NetElastic/$date_time.txt
 sleep 1
-rsync -av /mnt/logdrive/TEMP/NetElastic /mnt/logdrive/ARCHIVE/
-#sleep 1
+rsync -av /mnt/logdrive/TEMP/NetElastic/ /mnt/logdrive/ARCHIVE
+sleep 1
+rm -fr /mnt/logdrive/TEMP/NetElastic/$date_time.txt
+sleep 1
+rm -fr /mnt/logdrive/logs-collect/NetElastic/$date_time.log
+sleep 1
+true -S > /var/log/syslog
 #mv /mnt/logdrive/TEMP/NetElastic/$date_time.txt /mnt/logdrive/EXPORT/NetElastic/
+
+
 
 
