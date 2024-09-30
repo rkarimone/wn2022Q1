@@ -83,7 +83,7 @@ sudo sysctl -p
 
 ############ 2024 #### with web-gui ####################
 
-
+https://www.linuxbabe.com/ubuntu/set-up-softether-vpn-server-ubuntu-24-04
 
 
 
