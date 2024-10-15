@@ -5,16 +5,15 @@
 
 # https://github.com/nawawi/xtables-addons -- MaxMind & DB-IP
 
-
-sudo apt-get update; sudo apt-get -y upgrade
+############  UBUNTU 20.04 #########################
+sudo apt-get update; 
+sudo apt-get -y upgrade
 sudo apt-get install curl unzip perl
 sudo apt-get install xtables-addons-common
 sudo apt-get install libtext-csv-xs-perl libmoosex-types-netaddr-ip-perl
 
 sudo mkdir /usr/share/xt_geoip
-
 chmod +x /usr/lib/xtables-addons/*
-
 sudo vim /usr/local/bin/geo-update.sh
 
 #!/bin/bash
@@ -115,3 +114,126 @@ wal_buffers = 7864kB
 default_statistics_target = 100
 
 
+
+
+
+############  UBUNTU 22.04/24.04 #########################
+
+# Install packages
+apt-get install xtables-addons-common libtext-csv-xs-perl unzip
+
+# Check modules
+modprobe xt_geoip
+sudo lsmod | grep ^xt_geoip
+
+# Create the directory where the country data should live
+mkdir /usr/share/xt_geoip
+
+# Download and install the latest country data
+mkdir /tmp/xt_geoip_dl
+cd /tmp/xt_geoip_dl
+
+/usr/libexec/xtables-addons/xt_geoip_dl
+/usr/libexec/xtables-addons/xt_geoip_build -D /usr/share/xt_geoip *.csv
+
+# Test rules to DROP Singapore
+iptables -I INPUT 1 -m geoip --src-cc SG -j DROP
+
+
+######### Automatic script ##########
+
+vim /usr/local/bin/geo-update.sh
+
+____________________________________________________________________________
+#!/bin/bash
+mkdir -p /tmp/xt_geoip_dl
+echo -e "Doing CD TMP \n"
+cd /tmp/xt_geoip_dl
+sleep 1
+echo -e "Downloading \n"
+/usr/libexec/xtables-addons/xt_geoip_dl
+sleep 1
+echo -e "Converting Or Bulding \n"
+/usr/libexec/xtables-addons/xt_geoip_build -D /usr/share/xt_geoip *.csv
+sleep 2
+echo -e "Removing TMP \n"
+rm -fr /tmp/xt_geoip_dl
+sleep 1
+echo -e "Removing Dot CSV TMP \n"
+rm -fr /usr/share/xt_geoip/dbip-country-lite.csv
+sleep 7
+echo -e "Reloading Iptables Rules \n"
+/opt/fight-spam/iptables-add-rules.sh
+____________________________________________________________________________
+( Save+Exit )
+
+
+### User Defined Iptables Script ###
+vim /opt/iptables-script-rules.sh
+____________________________________________________________________________
+
+#!/bin/bash
+iptables -F INPUT
+iptables -F OUTPUT
+iptables -F FORWARD
+iptables -F -t mangle
+iptables -F -t nat
+iptables -F
+iptables -X
+iptables -Z
+iptables -t nat -F
+iptables -t nat -X
+iptables -t nat -Z
+iptables --table nat -F
+iptables --delete-chain
+iptables --table nat --delete-chain
+iptables -t mangle --delete-chain
+
+#systemctl stop postfix
+#systemctl stop dovecot
+#systemctl restart ufw
+#systemctl restart fail2ban
+
+#/etc/init.d/ufw restart
+#/etc/init.d/fail2ban restart
+sleep 5
+while read IP; do
+    iptables -I INPUT -s $IP -j DROP
+done < /opt/fight-spam/extracted-ip-list.txt
+iptables -I INPUT 1 -i lo -j ACCEPT
+iptables -I INPUT 2 -i wg0 -j ACCEPT
+iptables -I INPUT 3 -i wg1 -j ACCEPT
+#
+iptables -I INPUT 4 -i ens18 -m geoip -p tcp -m multiport --dports 22,25,7878,7979,110,143,465,587,993,995,8080,8081 --src-cc BR,RU,CN,PL,TW,CA,JP,HK,KR,UA,DE,TR,ID,IN,FR -j DROP
+iptables -I INPUT 5 -i ens18 -m geoip -p tcp -m multiport --dports 22,25,7878,7979,110,143,465,587,993,995,8080,8081 --src-cc GB,NL,SK,ZA,VN,KH,MX,MZ,LT,IT,AL,RO,US,IR,CZ -j DROP
+iptables -I INPUT 6 -i ens18 -m geoip -p tcp -m multiport --dports 22,25,7878,7979,110,143,465,587,993,995,8080,8081 --src-cc AR,BG,IQ,EG,PY,NP,AU,NO,SG,DE,PT,NG,DO,SE,PK -j DROP
+iptables -I INPUT 7 -i ens18 -m geoip -p tcp -m multiport --dports 22,25,7878,7979,110,143,465,587,993,995,8080,8081 --src-cc ET,IL,MT,ES,KN,TN,RS,ZM,CL,TH,LR,AM,CO,MD -j DROP
+#
+iptables -P INPUT ACCEPT
+#
+#systemctl start postfix
+#systemctl start dovecot
+____________________________________________________________________________
+( Save+Exit )
+
+vim /opt/fight-spam/extracted-ip-list.txt
+80.94.95.0/24
+( Save+Exit )
+
+# Provide Exec Permission ###
+chmod +x /usr/local/bin/geo-update.sh
+chmod +x /opt/iptables-script-rules.sh
+
+# Run ...
+/usr/local/bin/geo-update.sh
+
+
+# Check rules ...
+iptables -L INPUT --line-numbers -vn
+
+
+
+#### Crontab for Weekly Update ####
+
+vim /etc/crontab
+@weekly         root    /usr/local/bin/geo-update.sh >/dev/null 2>&1
