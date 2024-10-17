@@ -434,19 +434,22 @@ sudo zfs create vmx4vol1/kvm
 echo "options zfs zfs_arc_max=8589934592" > /etc/modprobe.d/zfs.conf
 echo "options zfs zfs_arc_max=6442450944" > /etc/modprobe.d/zfs.conf
 
-
-echo "options zfs zfs_arc_max=17179869184" > /etc/modprobe.d/zfs.conf
-echo "options zfs zfs_arc_max=25769803776" > /etc/modprobe.d/zfs.conf
-
-
 sudo add-apt-repository ppa:jonathonf/zfs
 sudo apt-get update
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+### ZFS ARCH MEMORY ###
+Min 32GB Max 48GB 
 
-echo "options zfs zfs_arc_max=4294967296" > /etc/modprobe.d/zfs.conf
-echo "4294967296" >> /sys/module/zfs/parameters/zfs_arc_max
+	
+vim /etc/modprobe.d/zfs.conf 
+options zfs zfs_arc_min=34359738368		
+options zfs zfs_arc_max=51539607552
+
+
+echo "34359738368" >> /sys/module/zfs/parameters/zfs_arc_min
+echo "51539607552" >> /sys/module/zfs/parameters/zfs_arc_max
 sync; echo 3 > /proc/sys/vm/drop_caches
 
 
