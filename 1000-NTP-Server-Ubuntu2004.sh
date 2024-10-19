@@ -259,20 +259,8 @@ server 3.asia.pool.ntp.org iburst
 server bd.pool.ntp.org iburst
 
 #add network range you allow to receive time syncing requests from clients
-allow 103.7.248.0/24
-allow 103.115.100.0/24
-allow 103.115.101.0/24
-allow 103.118.84.0/22
-allow 103.12.204.0/23
-allow 103.109.215.0/24
-allow 103.132.180.0/24
-allow 103.166.59.0/24
-allow 103.138.250.0/24
-allow 103.152.105.0/24
-allow 103.179.124.0/24
-allow 103.124.30.0/23
-allow 103.229.83.0/24
-allow 103.229.82.0/24
+allow 192.168.0.0/16
+allow 172.16.0.0/16
 
 ####
 #### ALLOW CYCLONE ISP SUBNET HERE #####
