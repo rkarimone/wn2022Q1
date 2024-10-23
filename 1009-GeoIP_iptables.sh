@@ -81,7 +81,7 @@ iptables -t mangle --delete-chain
 sleep 5
 while read IP; do
     iptables -I INPUT -s $IP -j DROP
-done < /opt/fight-spam/extracted-ip-list.txt
+done < /opt/spam-ip-list.txt
 iptables -I INPUT 1 -i lo -j ACCEPT
 #iptables -I INPUT 2 -i wg0 -j ACCEPT
 #iptables -I INPUT 3 -i wg1 -j ACCEPT
@@ -98,7 +98,7 @@ iptables -P INPUT ACCEPT
 ____________________________________________________________________________
 ( Save+Exit )
 
-vim /opt/fight-spam/extracted-ip-list.txt
+vim /opt/spam-ip-list.txt
 80.94.95.0/24
 ( Save+Exit )
 
