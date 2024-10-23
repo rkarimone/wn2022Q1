@@ -45,7 +45,7 @@ echo -e "Removing Dot CSV TMP \n"
 rm -fr /usr/share/xt_geoip/dbip-country-lite.csv
 sleep 7
 echo -e "Reloading Iptables Rules \n"
-/opt/fight-spam/iptables-add-rules.sh
+vim /opt/iptables-script-rules.sh
 ____________________________________________________________________________
 ( Save+Exit )
 
@@ -83,13 +83,13 @@ while read IP; do
     iptables -I INPUT -s $IP -j DROP
 done < /opt/fight-spam/extracted-ip-list.txt
 iptables -I INPUT 1 -i lo -j ACCEPT
-iptables -I INPUT 2 -i wg0 -j ACCEPT
-iptables -I INPUT 3 -i wg1 -j ACCEPT
+#iptables -I INPUT 2 -i wg0 -j ACCEPT
+#iptables -I INPUT 3 -i wg1 -j ACCEPT
 #
-iptables -I INPUT 4 -i ens18 -m geoip -p tcp -m multiport --dports 22,25,7878,7979,110,143,465,587,993,995,8080,8081 --src-cc BR,RU,CN,PL,TW,CA,JP,HK,KR,UA,DE,TR,ID,IN,FR -j DROP
-iptables -I INPUT 5 -i ens18 -m geoip -p tcp -m multiport --dports 22,25,7878,7979,110,143,465,587,993,995,8080,8081 --src-cc GB,NL,SK,ZA,VN,KH,MX,MZ,LT,IT,AL,RO,US,IR,CZ -j DROP
-iptables -I INPUT 6 -i ens18 -m geoip -p tcp -m multiport --dports 22,25,7878,7979,110,143,465,587,993,995,8080,8081 --src-cc AR,BG,IQ,EG,PY,NP,AU,NO,SG,DE,PT,NG,DO,SE,PK -j DROP
-iptables -I INPUT 7 -i ens18 -m geoip -p tcp -m multiport --dports 22,25,7878,7979,110,143,465,587,993,995,8080,8081 --src-cc ET,IL,MT,ES,KN,TN,RS,ZM,CL,TH,LR,AM,CO,MD -j DROP
+iptables -I INPUT 2 -i ens18 -m geoip -p tcp -m multiport --dports 22,25,7878,7979,110,143,465,587,993,995,8080,8081 --src-cc BR,RU,CN,PL,TW,CA,JP,HK,KR,UA,DE,TR,ID,IN,FR -j DROP
+iptables -I INPUT 3 -i ens18 -m geoip -p tcp -m multiport --dports 22,25,7878,7979,110,143,465,587,993,995,8080,8081 --src-cc GB,NL,SK,ZA,VN,KH,MX,MZ,LT,IT,AL,RO,US,IR,CZ -j DROP
+iptables -I INPUT 4 -i ens18 -m geoip -p tcp -m multiport --dports 22,25,7878,7979,110,143,465,587,993,995,8080,8081 --src-cc AR,BG,IQ,EG,PY,NP,AU,NO,SG,DE,PT,NG,DO,SE,PK -j DROP
+iptables -I INPUT 5 -i ens18 -m geoip -p tcp -m multiport --dports 22,25,7878,7979,110,143,465,587,993,995,8080,8081 --src-cc ET,IL,MT,ES,KN,TN,RS,ZM,CL,TH,LR,AM,CO,MD -j DROP
 #
 iptables -P INPUT ACCEPT
 #
