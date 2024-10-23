@@ -45,7 +45,7 @@ echo -e "Removing Dot CSV TMP \n"
 rm -fr /usr/share/xt_geoip/dbip-country-lite.csv
 sleep 7
 echo -e "Reloading Iptables Rules \n"
-vim /opt/iptables-script-rules.sh
+/opt/iptables-script-rules.sh
 ____________________________________________________________________________
 ( Save+Exit )
 
